@@ -1,0 +1,100 @@
+package com.github.shin1x1.jsonparser.parser;
+
+import com.github.shin1x1.jsonparser.lexer.Lexer;
+import com.github.shin1x1.jsonparser.lexer.Scanner;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ParserTest {
+    @Test
+    public void parse_number() {
+        var scanner = new Scanner("123.45");
+        var sut = new Parser(new Lexer(scanner));
+
+        assertEquals(new JsonValue.Number(BigDecimal.valueOf(123.45)), sut.parse());
+    }
+
+    @Test
+    public void parse_string() {
+        var scanner = new Scanner("\"abc\"");
+        var sut = new Parser(new Lexer(scanner));
+
+        assertEquals(new JsonValue.String("abc"), sut.parse());
+    }
+
+    @Test
+    public void parse_literal() {
+        var scanner = new Scanner("true");
+        var sut = new Parser(new Lexer(scanner));
+
+        assertEquals(new JsonValue.True(), sut.parse());
+    }
+
+    @Test
+    public void parse_empty() {
+        var scanner = new Scanner("");
+        var sut = new Parser(new Lexer(scanner));
+
+        assertEquals(new JsonValue.Null(), sut.parse());
+    }
+
+    @Test
+    public void parse_array() {
+        var scanner = new Scanner("[1,true,\"a\"]");
+        var sut = new Parser(new Lexer(scanner));
+
+        List<JsonValue> expectedList = Arrays.asList(
+                new JsonValue.Number(new BigDecimal("1")),
+                new JsonValue.True(),
+                new JsonValue.String("a")
+        );
+        assertEquals(new JsonValue.Array(expectedList), sut.parse());
+    }
+
+
+    @Test
+    public void parse_array_recursive() {
+        var scanner = new Scanner("[[1,2,3],\"a\"]");
+        var sut = new Parser(new Lexer(scanner));
+
+        List<JsonValue> expectedList = Arrays.asList(
+                new JsonValue.Array(
+                        Arrays.asList(
+                                new JsonValue.Number(new BigDecimal("1")),
+                                new JsonValue.Number(new BigDecimal("2")),
+                                new JsonValue.Number(new BigDecimal("3"))
+                        )
+                ),
+                new JsonValue.String("a")
+        );
+        assertEquals(new JsonValue.Array(expectedList), sut.parse());
+    }
+
+    @Test
+    public void parse_object() {
+        var scanner = new Scanner("{\"key1\": 1, \"key2\": {\"a\": [1,2,3]}}");
+        var sut = new Parser(new Lexer(scanner));
+
+        var expectedMap = new HashMap<String, JsonValue>() {
+            {
+                put("key1", new JsonValue.Number(new BigDecimal("1")));
+                put("key2", new JsonValue.Object(new HashMap<>() {
+                    {
+                        put("a", new JsonValue.Array(Arrays.asList(
+                                new JsonValue.Number(new BigDecimal("1")),
+                                new JsonValue.Number(new BigDecimal("2")),
+                                new JsonValue.Number(new BigDecimal("3"))
+                        )));
+                    }
+                }));
+            }
+        };
+        assertEquals(new JsonValue.Object(expectedMap), sut.parse());
+    }
+}

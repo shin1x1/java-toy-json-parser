@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LexerTest {
     @Test
     void getNextToken() {
-        var sut = new Lexer(new Scanner("[]{}:,true,false,null123.45\"a\u3042bc\""));
+        var sut = new Lexer(new Scanner("[]{}:,true,false, \n\r\tnull123.45\"a\u3042bc\""));
 
         assertEquals(new Token.LeftBracket(), sut.getNextToken().orElseThrow());
         assertEquals(new Token.RightBracket(), sut.getNextToken().orElseThrow());

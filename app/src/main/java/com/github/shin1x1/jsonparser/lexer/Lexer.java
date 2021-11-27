@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 public final class Lexer {
-    private @Nonnull
-    final Scanner scanner;
+    @Nonnull
+    private final Scanner scanner;
 
     public Lexer(@Nonnull Scanner scanner) {
         this.scanner = scanner;
@@ -22,7 +22,12 @@ public final class Lexer {
             return Optional.empty();
         }
 
-        return Optional.of(lex(ch.get()));
+        char c = ch.get();
+        if (c == ' ' || c == '\n' || c == '\r' || c == '\t') {
+            return getNextToken();
+        }
+
+        return Optional.of(lex(c));
     }
 
     private Token lex(char ch) {
