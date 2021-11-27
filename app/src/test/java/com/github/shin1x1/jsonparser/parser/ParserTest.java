@@ -2,7 +2,10 @@ package com.github.shin1x1.jsonparser.parser;
 
 import com.github.shin1x1.jsonparser.lexer.Lexer;
 import com.github.shin1x1.jsonparser.lexer.Scanner;
+import com.github.shin1x1.jsonparser.parser.exception.UnexpectedTokenException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ParserTest {
     @Test
@@ -96,5 +100,23 @@ class ParserTest {
             }
         };
         assertEquals(new JsonValue.Object(expectedMap), sut.parse());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"{:1}", "{{", "[,", ":"})
+    void parse_UnexpectedToken(String json) {
+        var scanner = new Scanner(json);
+        var sut = new Parser(new Lexer(scanner));
+
+        assertThrows(UnexpectedTokenException.class, sut::parse);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"[", "[1", "{", "{\"k\":", "\"a"})
+    void parse_UnexpectedEot(String json) {
+        var scanner = new Scanner(json);
+        var sut = new Parser(new Lexer(scanner));
+
+        assertThrows(UnexpectedTokenException.class, sut::parse);
     }
 }

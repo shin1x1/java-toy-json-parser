@@ -1,8 +1,13 @@
 package com.github.shin1x1.jsonparser.lexer;
 
+import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedCharacterException;
+import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedEotException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LexerTest {
     @Test
@@ -43,5 +48,21 @@ class LexerTest {
         var sut = new Lexer(new Scanner("-123e5"));
 
         assertEquals(new Token.Number("-1.23e7"), sut.getNextToken().orElseThrow());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"a", "tru1", "nul1", "fal1"})
+    void getNextToken_UnexpetedCharacter(String json) {
+        var sut = new Lexer(new Scanner(json));
+
+        assertThrows(UnexpectedCharacterException.class, sut::getNextToken);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"[1", "{", "tru", "nul", "fals"})
+    void getNextToken_UnexpetedEot(String json) {
+        var sut = new Lexer(new Scanner(json));
+
+        assertThrows(UnexpectedEotException.class, sut::getNextToken);
     }
 }
