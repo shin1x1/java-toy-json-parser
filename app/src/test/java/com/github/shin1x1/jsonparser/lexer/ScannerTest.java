@@ -15,9 +15,9 @@ class ScannerTest {
 
     @Test
     void consume() throws IOException {
-        var sut = new Scanner("123");
+        var sut = new Scanner("1あ3");
         assertEquals('1', sut.consume().orElseThrow());
-        assertEquals('2', sut.consume().orElseThrow());
+        assertEquals('あ', sut.consume().orElseThrow());
         assertEquals('3', sut.consume().orElseThrow());
         assertTrue(sut.consume().isEmpty());
     }

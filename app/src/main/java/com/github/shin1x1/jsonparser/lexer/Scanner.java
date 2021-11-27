@@ -4,16 +4,17 @@ import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public final class Scanner {
     @Nonnull
-    private final InputStream input;
+    private final InputStreamReader reader;
     private int current;
 
     public Scanner(@Nonnull InputStream input) throws IOException {
-        this.input = input;
+        this.reader = new InputStreamReader(input);
         this.current = read();
     }
 
@@ -22,7 +23,7 @@ public final class Scanner {
     }
 
     private int read() throws IOException {
-        return input.read();
+        return reader.read();
     }
 
     public Optional<Character> peek() {
