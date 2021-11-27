@@ -1,12 +1,14 @@
 package com.github.shin1x1.jsonparser.lexer;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class Scanner {
+public final class Scanner {
     private int position = 0;
-    private final String json;
+    private @Nonnull
+    final String json;
 
-    public Scanner(String json) {
+    public Scanner(@Nonnull String json) {
         this.json = json;
     }
 
