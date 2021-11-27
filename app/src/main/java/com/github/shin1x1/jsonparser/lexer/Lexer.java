@@ -4,7 +4,6 @@ import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedCharacterExceptio
 import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedEotException;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.util.Optional;
 
 public final class Lexer {
@@ -65,7 +64,7 @@ public final class Lexer {
             chs.append(ch);
         }
 
-        return new Token.Number(new BigDecimal(chs.toString()));
+        return new Token.Number(chs.toString());
     }
 
     private Token lexString() {

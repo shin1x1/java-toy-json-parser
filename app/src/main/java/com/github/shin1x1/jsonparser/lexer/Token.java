@@ -31,6 +31,9 @@ public sealed interface Token {
     }
 
     record Number(BigDecimal value) implements Token {
+        public Number(java.lang.String value) {
+            this(new BigDecimal(value));
+        }
     }
 
     record String(java.lang.String value) implements Token {

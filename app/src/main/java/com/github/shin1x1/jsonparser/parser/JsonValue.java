@@ -15,6 +15,9 @@ public sealed interface JsonValue {
     }
 
     record Number(BigDecimal value) implements JsonValue {
+        public Number(java.lang.String value) {
+            this(new BigDecimal(value));
+        }
     }
 
     record String(java.lang.String value) implements JsonValue {

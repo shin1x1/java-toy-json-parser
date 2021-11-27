@@ -13,15 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ParserTest {
     @Test
-    public void parse_number() {
+    void parse_number() {
         var scanner = new Scanner("123.45");
         var sut = new Parser(new Lexer(scanner));
 
-        assertEquals(new JsonValue.Number(BigDecimal.valueOf(123.45)), sut.parse());
+        assertEquals(new JsonValue.Number("123.45"), sut.parse());
     }
 
     @Test
-    public void parse_string() {
+    void parse_string() {
         var scanner = new Scanner("\"abc\"");
         var sut = new Parser(new Lexer(scanner));
 
@@ -29,7 +29,7 @@ class ParserTest {
     }
 
     @Test
-    public void parse_literal() {
+    void parse_literal() {
         var scanner = new Scanner("true");
         var sut = new Parser(new Lexer(scanner));
 
@@ -37,7 +37,7 @@ class ParserTest {
     }
 
     @Test
-    public void parse_empty() {
+    void parse_empty() {
         var scanner = new Scanner("");
         var sut = new Parser(new Lexer(scanner));
 
@@ -45,12 +45,12 @@ class ParserTest {
     }
 
     @Test
-    public void parse_array() {
+    void parse_array() {
         var scanner = new Scanner("[1,true,\"a\"]");
         var sut = new Parser(new Lexer(scanner));
 
         List<JsonValue> expectedList = Arrays.asList(
-                new JsonValue.Number(new BigDecimal("1")),
+                new JsonValue.Number("1"),
                 new JsonValue.True(),
                 new JsonValue.String("a")
         );
@@ -59,16 +59,16 @@ class ParserTest {
 
 
     @Test
-    public void parse_array_recursive() {
+    void parse_array_recursive() {
         var scanner = new Scanner("[[1,2,3],\"a\"]");
         var sut = new Parser(new Lexer(scanner));
 
         List<JsonValue> expectedList = Arrays.asList(
                 new JsonValue.Array(
                         Arrays.asList(
-                                new JsonValue.Number(new BigDecimal("1")),
-                                new JsonValue.Number(new BigDecimal("2")),
-                                new JsonValue.Number(new BigDecimal("3"))
+                                new JsonValue.Number("1"),
+                                new JsonValue.Number("2"),
+                                new JsonValue.Number("3")
                         )
                 ),
                 new JsonValue.String("a")
@@ -77,7 +77,7 @@ class ParserTest {
     }
 
     @Test
-    public void parse_object() {
+    void parse_object() {
         var scanner = new Scanner("{\"key1\": 1, \"key2\": {\"a\": [1,2,3]}}");
         var sut = new Parser(new Lexer(scanner));
 
@@ -87,9 +87,9 @@ class ParserTest {
                 put("key2", new JsonValue.Object(new HashMap<>() {
                     {
                         put("a", new JsonValue.Array(Arrays.asList(
-                                new JsonValue.Number(new BigDecimal("1")),
-                                new JsonValue.Number(new BigDecimal("2")),
-                                new JsonValue.Number(new BigDecimal("3"))
+                                new JsonValue.Number("1"),
+                                new JsonValue.Number("2"),
+                                new JsonValue.Number("3")
                         )));
                     }
                 }));
