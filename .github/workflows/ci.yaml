@@ -20,3 +20,5 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Run test
+        run: ./gradlew test
