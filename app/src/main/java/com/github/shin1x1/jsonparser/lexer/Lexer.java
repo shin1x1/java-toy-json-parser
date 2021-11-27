@@ -1,7 +1,5 @@
 package com.github.shin1x1.jsonparser.lexer;
 
-import com.github.shin1x1.jsonparser.lexer.exception.InvalidCharacterException;
-import com.github.shin1x1.jsonparser.lexer.exception.InvalidTokenException;
 import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedCharacterException;
 import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedEotException;
 
@@ -40,7 +38,7 @@ public final class Lexer {
             case 't' -> lexLiteral("true", new Token.True());
             case 'f' -> lexLiteral("false", new Token.False());
             case 'n' -> lexLiteral("null", new Token.Null());
-            default -> throw new InvalidCharacterException(ch);
+            default -> throw new UnexpectedCharacterException(ch);
         };
     }
 
@@ -121,9 +119,9 @@ public final class Lexer {
 
     private Token lexLiteral(String literal, Token token) {
         for (int i = 1; i < literal.length(); i++) {
-            var ch = scanner.consume().orElseThrow(InvalidTokenException::new);
+            var ch = scanner.consume().orElseThrow(UnexpectedEotException::new);
             if (ch != literal.charAt(i)) {
-                throw new InvalidTokenException();
+                throw new UnexpectedCharacterException(ch);
             }
         }
 

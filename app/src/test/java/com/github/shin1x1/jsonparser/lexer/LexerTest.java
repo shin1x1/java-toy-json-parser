@@ -46,10 +46,4 @@ class LexerTest {
 
         assertEquals(new Token.Number(new BigDecimal("-1.23e7")), sut.getNextToken().orElseThrow());
     }
-
-
-//    @Test
-//    void getNextToken_null() {
-//        var sut = new Lexer(new Scanner(null));
-//    }
 }
