@@ -1,36 +1,45 @@
 package com.github.shin1x1.jsonparser.lexer;
 
 import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public final class Scanner {
-    private int position = 0;
-    private @Nonnull
-    final String json;
+    @Nonnull
+    private final InputStream input;
+    private int current;
 
-    public Scanner(@Nonnull String json) {
-        this.json = json;
+    public Scanner(@Nonnull InputStream input) throws IOException {
+        this.input = input;
+        this.current = read();
+    }
+
+    public Scanner(@Nonnull String json) throws IOException {
+        this(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private int read() throws IOException {
+        return input.read();
     }
 
     public Optional<Character> peek() {
-        if (isEot()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(json.charAt(position));
+        return isEot() ? Optional.empty() : Optional.of((char) current);
     }
 
-    public Optional<Character> consume() {
+    public Optional<Character> consume() throws IOException {
         var ch = peek();
 
         if (!isEot()) {
-            position++;
+            current = read();
         }
 
         return ch;
     }
 
     public boolean isEot() {
-        return position >= json.length();
+        return current == -1;
     }
 }

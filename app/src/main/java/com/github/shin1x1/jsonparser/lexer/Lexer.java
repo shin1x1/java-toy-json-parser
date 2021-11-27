@@ -4,6 +4,7 @@ import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedCharacterExceptio
 import com.github.shin1x1.jsonparser.lexer.exception.UnexpectedEotException;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.Optional;
 
 public final class Lexer {
@@ -14,7 +15,7 @@ public final class Lexer {
         this.scanner = scanner;
     }
 
-    public Optional<Token> getNextToken() {
+    public Optional<Token> getNextToken() throws IOException {
         var ch = scanner.consume();
 
         if (ch.isEmpty()) {
@@ -29,7 +30,7 @@ public final class Lexer {
         return Optional.of(lex(c));
     }
 
-    private Token lex(char ch) {
+    private Token lex(char ch) throws IOException {
         return switch (ch) {
             case '[' -> new Token.LeftBracket();
             case ']' -> new Token.RightBracket();
@@ -38,7 +39,7 @@ public final class Lexer {
             case ':' -> new Token.Colon();
             case ',' -> new Token.Comma();
             case '"' -> lexString();
-            case '-', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lexNumber(ch);
+            case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> lexNumber(ch);
             case 't' -> lexLiteral("true", new Token.True());
             case 'f' -> lexLiteral("false", new Token.False());
             case 'n' -> lexLiteral("null", new Token.Null());
@@ -46,7 +47,7 @@ public final class Lexer {
         };
     }
 
-    private Token lexNumber(char first) {
+    private Token lexNumber(char first) throws IOException {
         var chs = new StringBuilder(String.valueOf(first));
 
         while (true) {
@@ -67,7 +68,7 @@ public final class Lexer {
         return new Token.Number(chs.toString());
     }
 
-    private Token lexString() {
+    private Token lexString() throws IOException {
         var chs = new StringBuilder();
         var backslash = false;
 
@@ -106,7 +107,7 @@ public final class Lexer {
         }
     }
 
-    private char lexCodepoint() {
+    private char lexCodepoint() throws IOException {
         var code = 0;
         for (var i = 0; i < 4; i++) {
             var ch = scanner.consume().orElseThrow(UnexpectedEotException::new);
@@ -121,7 +122,7 @@ public final class Lexer {
         return (char) code;
     }
 
-    private Token lexLiteral(String literal, Token token) {
+    private Token lexLiteral(String literal, Token token) throws IOException {
         for (int i = 1; i < literal.length(); i++) {
             var ch = scanner.consume().orElseThrow(UnexpectedEotException::new);
             if (ch != literal.charAt(i)) {

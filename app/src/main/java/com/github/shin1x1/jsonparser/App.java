@@ -3,12 +3,28 @@
  */
 package com.github.shin1x1.jsonparser;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import com.github.shin1x1.jsonparser.lexer.Lexer;
+import com.github.shin1x1.jsonparser.lexer.Scanner;
+import com.github.shin1x1.jsonparser.parser.Parser;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+public class App {
+    public static void main(String[] args) throws IOException {
+        InputStream input;
+        if (args.length > 0) {
+            input = new FileInputStream(args[0]);
+        } else {
+            input = System.in;
+        }
+
+        try (input) {
+            var scanner = new Scanner(input);
+            var parser = new Parser(new Lexer(scanner));
+
+            System.out.println(parser.parse());
+        }
     }
 }

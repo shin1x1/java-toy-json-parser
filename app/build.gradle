@@ -29,6 +29,10 @@ application {
     mainClass = 'com.github.shin1x1.jsonparser.App'
 }
 
+tasks.named('run', JavaExec.class) {
+    standardInput = System.in
+}
+
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()

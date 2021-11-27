@@ -7,6 +7,7 @@ import com.github.shin1x1.jsonparser.parser.exception.NoKeyException;
 import com.github.shin1x1.jsonparser.parser.exception.UnexpectedTokenException;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -19,7 +20,7 @@ public final class Parser {
         this.lexer = lexer;
     }
 
-    public JsonValue parse() {
+    public JsonValue parse() throws IOException {
         var token = lexer.getNextToken();
         if (token.isEmpty()) {
             return new JsonValue.Null();
@@ -28,7 +29,7 @@ public final class Parser {
         return parseValue(token.get());
     }
 
-    private JsonValue parseValue(Token token) {
+    private JsonValue parseValue(Token token) throws IOException {
         if (token instanceof Token.True) {
             return new JsonValue.True();
         } else if (token instanceof Token.False) {
@@ -48,7 +49,7 @@ public final class Parser {
         throw new UnexpectedTokenException(token);
     }
 
-    private JsonValue.Array parseArray() {
+    private JsonValue.Array parseArray() throws IOException {
         enum State {
             Default, Value, Comma
         }
@@ -84,7 +85,7 @@ public final class Parser {
         }
     }
 
-    private JsonValue.Object parseObject() {
+    private JsonValue.Object parseObject() throws IOException {
         enum State {
             Default, Key, Colon, Value, Comma
         }

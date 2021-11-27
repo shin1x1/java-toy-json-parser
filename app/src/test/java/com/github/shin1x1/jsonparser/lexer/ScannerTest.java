@@ -2,17 +2,19 @@ package com.github.shin1x1.jsonparser.lexer;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScannerTest {
     @Test
-    void peek() {
+    void peek() throws IOException {
         var sut = new Scanner("1");
         assertEquals('1', sut.peek().orElseThrow());
     }
 
     @Test
-    void consume() {
+    void consume() throws IOException {
         var sut = new Scanner("123");
         assertEquals('1', sut.consume().orElseThrow());
         assertEquals('2', sut.consume().orElseThrow());
@@ -21,7 +23,7 @@ class ScannerTest {
     }
 
     @Test
-    void isEot() {
+    void isEot() throws IOException {
         var sut = new Scanner("1");
         assertFalse(sut.isEot());
         sut.consume();
